@@ -38,16 +38,15 @@ proc outputOct, number
 		mov ecx, 11
 ConvertOCTtoASCII:
 		xor edx, edx
-		shld edx, eax, 3
-		rol eax, 3		
-		neg ecx
-		mov [outBuff + ecx + 8], dl
-		add [outBuff + ecx + 8], '0'
-		neg ecx
+		shrd edx, eax, 3
+		shr eax, 3
+		shr edx, 29		
+		mov [outBuff + ecx - 1], dl
+		add [outBuff + ecx - 1], '0'
 
 		loop ConvertOCTtoASCII
 
-		invoke WriteConsoleA, [hStdOut], outBuff, 11, chrsWritten, 0
+		invoke WriteConsoleA, [hStdOut], outBuff, 10, chrsWritten, 0
 		popa
 		ret
 endp

@@ -25,7 +25,7 @@ proc initConsole
 endp	
 
 proc printfAsm
-		call initConsole
+		call initConsole		
 		push ebp
 		mov ebp, esp
 label .formatStr dword at ebp+8
@@ -57,7 +57,9 @@ Symb_%:
 		je Print_x
 		cmp al, 'p'
 		je Print_p
-		jmp OtherSymb	
+		cmp al, 'o'
+		je Print_o
+		jmp ErrorSymb	
 Print_d:
 		mov edx, [edi]
 		add edi, 4
@@ -83,6 +85,12 @@ Print_b:
 		push edx
 		call outputBin
 		jmp ParseFormatString
+Print_o:
+		mov edx, [edi]
+		add edi, 4
+		push edx
+		call outputOct
+		jmp ParseFormatString
 Print_x:
 		mov edx, [edi]
 		add edi, 4
@@ -105,6 +113,9 @@ OtherSymb:
 		push eax
 		call outputChar
 		jmp ParseFormatString
+ErrorSymb:	
+		jmp ParseFormatString
+
 EndPrintfAsm:
 
 		mov esp, ebp

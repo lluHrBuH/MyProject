@@ -4,7 +4,8 @@ unsigned int __cdecl printfAsm(const char *format, ...);
 
 int main()
 {
-	int a = 123;
-	printfAsm("Address: %x %% Hex:<%b>", a, a);
+	int a = 12123;
+	printfAsm("Dec:<%d> Oct:<%o> Bin:<%b Hex:<%x>", a, a, a, a);
+
 	return 0;
 }

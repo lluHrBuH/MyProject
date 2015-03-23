@@ -2,31 +2,31 @@
 ;			Output Binary number
 ;
 ;-------------------------------------------------------------------------------
+
 proc outputBin, number
 		pusha
 		mov eax, [number]
 		xor ecx, ecx
 		mov cl, 32
+		xor esi, esi
 ConvertBinToASCII:
-		dec ecx
-		bt eax, ecx
-		inc ecx
+		shr eax, 1
 		jc WriteBit_1 
 WriteBit_0:
-		neg ecx
-		mov [outBuff + ecx + 32], '0'
-		neg ecx
+		inc esi
+		mov [outBuff + ecx - 1], '0'
 		jmp EndBin_loop
 
 WriteBit_1:
-		neg ecx
-		mov [outBuff + ecx + 32 ], '1'
-		neg ecx
+		xor esi, esi
+		mov [outBuff + ecx - 1], '1'
 EndBin_loop:
 		loop ConvertBinToASCII
-
+		mov edi, 32
+		sub edi, esi
+		add esi, outBuff
 		mov ebx, [WriteConsoleA]
-		stdcall ebx, [hStdOut], outBuff, 32, chrsWritten, 0
+		stdcall ebx, [hStdOut], esi, edi, chrsWritten, 0
 		popa
 		ret
 endp
@@ -36,21 +36,31 @@ endp
 ;-------------------------------------------------------------------------------
 proc outputOct, number
 		pusha
+		xor esi, esi
 		mov eax, [number]
 		mov ecx, 11
 ConvertOCTtoASCII:
 		xor edx, edx
-		shld edx, eax, 3
-		rol eax, 3		
-		neg ecx
-		mov [outBuff + ecx + 8], dl
-		add [outBuff + ecx + 8], '0'
-		neg ecx
-
+		shrd edx, eax, 3
+		shr eax, 3
+		shr edx, 29		
+		mov [outBuff + ecx - 1], dl
+		add [outBuff + ecx - 1], '0'
+		cmp dl, 0
+		jne IsNotZeroOct
+IsZeroOct:
+		inc esi
+		jmp ContConvertOct
+IsNotZeroOct:
+		xor esi, esi
+ContConvertOct:
 		loop ConvertOCTtoASCII
 
 		mov ebx, [WriteConsoleA]
-		stdcall ebx, [hStdOut], outBuff, 11, chrsWritten, 0
+		mov edi, 11
+		sub edi, esi
+		add esi, outBuff
+		stdcall ebx, [hStdOut], esi, edi, chrsWritten, 0
 		popa
 		ret
 endp
@@ -69,12 +79,12 @@ ConvertDECtoASCII:
 		xor edx, edx
 		div ebx
 		mov [outBuff + ecx - 1], dl
-		cmp al, 0
-		jne IsNotZero
-IsZero:
+		cmp eax, 0
+		jne IsNotZeroDec
+IsZeroDec:
 		inc esi
 		jmp ContConvertDec
-IsNotZero:
+IsNotZeroDec:
 		xor esi, esi
 ContConvertDec:
 		add [outBuff + ecx - 1], '0'

@@ -48,7 +48,9 @@ Symb_%:
 		cmp al, 'x'
 		je Print_x
 		cmp al, 'p'
-		je Print_x
+		je Print_p
+		cmp al, 'o'
+		je Print_o
 		jmp OtherSymb	
 Print_d:
 		mov edx, [edi]
@@ -74,6 +76,12 @@ Print_b:
 		add edi, 4
 		push edx
 		call outputBin
+		jmp ParseFormatString
+Print_o:
+		mov edx, [edi]
+		add edi, 4
+		push edx
+		call outputOct
 		jmp ParseFormatString
 Print_x:
 		mov edx, [edi]
@@ -109,14 +117,14 @@ endp
 ;-------------------------------------------------------------------------------
 Start:
 		call initConsole
-		ccall printfAsm,formatStr ,strToOut, 10, 123, 50
+		ccall printfAsm,formatStr ,123, 123, 123
 		invoke ReadConsoleA, [hStdIn], readBuf, 16, chrsRead, 0
 
 		invoke	ExitProcess, 0
 
 section '.data' data readable writeable 
 strToOut 	db 'String ^1',0
-formatStr 	db 'String:%s Number:%d Bin:%b Hex:%x',0
+formatStr 	db 'Number:<%d> Hex:<%x> Oct:<%o>',0
 hStdIn		dd 0
 hStdOut 	dd 0
 chrsRead	dd 0
