@@ -117,14 +117,14 @@ endp
 ;-------------------------------------------------------------------------------
 Start:
 		call initConsole
-		ccall printfAsm,formatStr ,123, 123, 123
+		ccall printfAsm,formatStr ,3, 123, 123
 		invoke ReadConsoleA, [hStdIn], readBuf, 16, chrsRead, 0
 
 		invoke	ExitProcess, 0
 
 section '.data' data readable writeable 
 strToOut 	db 'String ^1',0
-formatStr 	db 'Number:<%d> Hex:<%x> Oct:<%o>',0
+formatStr 	db 'Number:<%c> Hex:<%x> Oct:<%o>',0
 hStdIn		dd 0
 hStdOut 	dd 0
 chrsRead	dd 0

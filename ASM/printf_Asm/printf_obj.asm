@@ -67,9 +67,8 @@ Print_d:
 		call outputDec
 		jmp ParseFormatString
 Print_c:
-		mov edx, [edi]
+		mov ecx, [edi]
 		add edi, 4
-		mov cl, [edx]
 		push ecx
 		call outputChar
 		jmp ParseFormatString

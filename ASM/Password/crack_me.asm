@@ -99,4 +99,4 @@ section '.idata' import data readable
     GetStdHandle, 'GetStdHandle',\
     WriteConsoleA, 'WriteConsoleA',\
     ReadConsoleA, 'ReadConsoleA',\
-    ExitProcess, 'ExitProcess'
+    ExitProcess, 'ExitProcess'	
